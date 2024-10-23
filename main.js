@@ -17,6 +17,26 @@ mongoose.connect(process.env.DB_URL, {
 }).catch((err) => {
     console.log(err);
 });
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: true
+}));
+app.use((req,res,next)=>{
+    res.locals.message=req.session.message;
+    delete req.session.message;
+    next();
+});
+
+// set template engine
+app.set('view engine','ejs');
+
+
+// Routes
 app.get('/', (req, res) => {
     res.send('Hello World');
 })
